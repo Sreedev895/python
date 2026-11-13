@@ -1,0 +1,20 @@
+
+services:
+  django:
+    build: .
+    container_name: python-django-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      SQLITE_NAME: /data/db.sqlite3
+    volumes:
+      - django_data:/data
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn --config gunicorn-cfg.py core.wsgi:application"
+
+volumes:
+  django_data:
